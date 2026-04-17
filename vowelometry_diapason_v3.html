@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vowelometry™ · Diapason Model v3.0 · © 2026 Stuart Cooley</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#111;padding:1.5rem;max-width:780px;margin:0 auto}
+.vm-eye{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:1.25rem}
+.vm-tabs{display:flex;gap:0;border-bottom:1px solid #e0e0e0;margin-bottom:1.25rem;overflow-x:auto}
+.vm-tab{font-size:13px;padding:6px 13px;cursor:pointer;border:none;background:transparent;color:#666;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.vm-tab.on{color:#111;border-bottom-color:#111}
+.vm-panel{display:none}.vm-panel.on{display:block}
+textarea{width:100%;min-height:100px;font-family:Georgia,serif;font-size:14px;line-height:1.65;padding:10px 13px;border:1px solid #ccc;border-radius:6px;resize:vertical;background:#fff;color:#111}
+textarea:focus{outline:none;border-color:#888}
+.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+button{font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;border:1px solid #ccc;background:transparent;color:#111;cursor:pointer}
+button:hover{background:#f5f5f5}
+button:active{transform:scale(.98)}
+select{font-size:13px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;color:#111}
+.axis-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:1rem 0}
+.ax{background:#f7f7f7;border-radius:8px;padding:10px 12px}
+.ax-sym{font-size:20px;font-weight:500;margin-bottom:2px}
+.ax-val{font-size:28px;font-weight:500;line-height:1}
+.ax-label{font-size:11px;color:#666;margin-top:3px}
+.tone-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 12px;border:1px solid #ddd;border-radius:20px;color:#666;margin-bottom:1rem}
+.bar-track{height:5px;background:#f0f0f0;border-radius:3px;position:relative;margin:8px 0 4px}
+.bar-fill{height:5px;border-radius:3px;background:#111;transition:width .5s ease}
+.bar-tgt{position:absolute;top:-4px;width:2px;height:13px;background:#999;border-radius:1px}
+.bar-ends{display:flex;justify-content:space-between;font-size:10px;color:#999;margin-bottom:1rem}
+.gap-note{font-size:13px;color:#555;padding:8px 12px;border-left:2px solid #ddd;margin-bottom:1rem;line-height:1.5}
+.chord-note{font-size:12px;color:#555;padding:8px 12px;border-left:2px solid #bbb;margin-bottom:1rem;font-style:italic;line-height:1.5}
+.ph-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:1rem}
+.ph{background:#f7f7f7;border-radius:6px;padding:7px 9px}
+.ph-hi{border:1px solid #aaa}
+.ph-sym{font-size:14px;font-weight:500}
+.ph-n{font-size:10px;color:#999;margin-bottom:3px;line-height:1.2}
+.ph-ct{font-size:16px;font-weight:500}
+.ph-bar{height:3px;background:#ddd;border-radius:2px;margin-top:4px}
+.ph-bf{height:3px;border-radius:2px;background:#666}
+.ph-wt{font-size:9px;color:#999;margin-top:2px}
+.sec-grid{margin-bottom:1rem}
+.sec-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0f0}
+.sec-label{font-size:12px;color:#666;width:90px;flex-shrink:0}
+.sec-bar-wrap{flex:1;position:relative;height:6px;background:#f0f0f0;border-radius:3px}
+.sec-bar{height:6px;border-radius:3px;background:#666}
+.sec-v{font-size:12px;font-weight:500;width:36px;text-align:right}
+.sec-d{font-size:11px;color:#999;width:52px;text-align:right}
+.high-label{font-size:11px;font-weight:500;color:#666;margin-bottom:6px}
+.pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:1rem}
+.pill{font-size:11px;padding:2px 8px;border:1px solid #ddd;border-radius:20px;color:#666;font-style:italic}
+.spill{font-size:11px;padding:2px 8px;border:1px solid #ddd;border-radius:20px;color:#666;font-style:italic;cursor:pointer;background:transparent}
+.spill:hover{background:#f5f5f5}
+.divider{border:none;border-top:1px solid #eee;margin:1rem 0}
+.seed-label{font-size:11px;font-weight:500;color:#666;margin-bottom:6px}
+.tgt-row{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.tgt-row label{font-size:13px;color:#666}
+.d-row{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.d-row label{font-size:12px;color:#666}
+.d-row input[type=range]{flex:1;max-width:160px}
+.d-val{font-size:13px;font-weight:500;min-width:28px}
+canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
+.tc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.tc-item{background:#f7f7f7;border-radius:6px;padding:8px 10px}
+.tc-tone{font-size:13px;font-weight:500}
+.tc-ph{font-size:10px;color:#999;font-style:italic;margin:2px 0}
+.tc-v{font-size:10px;color:#666}
+.tc-seeds{font-size:10px;color:#666;margin-top:3px;line-height:1.4}
+.inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.inv-item{background:#f7f7f7;border-radius:6px;padding:8px 10px}
+.inv-hi{border:1px solid #aaa}
+.inv-sym{font-size:17px;font-weight:500}
+.inv-name{font-size:10px;color:#666}
+.inv-ex{font-size:9px;color:#999;font-style:italic;margin:2px 0}
+.inv-wt{font-size:10px;font-weight:500}
+.chord-grid{display:grid;grid-template-columns:1fr;gap:6px}
+.chord-item{background:#f7f7f7;border-radius:6px;padding:10px 12px}
+.chord-name{font-size:14px;font-weight:500;margin-bottom:3px}
+.chord-eq{font-size:12px;color:#666;font-style:italic;margin-bottom:4px}
+.chord-ex{font-size:11px;color:#999;line-height:1.4}
+.tagline{font-size:11px;color:#999;font-style:italic;text-align:center;margin-top:1.25rem}
+.hidden{display:none}
+@media(prefers-color-scheme:dark){
+  body{background:#1a1a1a;color:#eee}
+  textarea,select,button{background:#2a2a2a;color:#eee;border-color:#444}
+  .ax,.ph,.tc-item,.inv-item,.chord-item{background:#2a2a2a}
+  .bar-track,.ph-bar,.sec-bar-wrap{background:#333}
+  .ph-bf,.sec-bar,.bar-fill{background:#ccc}
+  .bar-tgt{background:#888}
+  .tone-badge,.pill,.spill{border-color:#444;color:#aaa}
+  .gap-note,.chord-note{border-left-color:#555;color:#aaa}
+  .divider{border-color:#333}
+  .vm-tabs{border-bottom-color:#333}
+  .sec-row{border-bottom-color:#333}
+  .vm-tab.on{color:#eee;border-bottom-color:#eee}
+  .ph-hi,.inv-hi{border-color:#888}
+}
+</style>
+</head>
+<body>
+<div class="vm-eye">Vowelometry™ · Diapason Model · v3.0 · © 2026 Stuart Cooley · Invented March 2026</div>
+
+<div class="vm-tabs">
+  <button class="vm-tab on" onclick="tab('scorer')">Scorer</button>
+  <button class="vm-tab" onclick="tab('viz')">Visualise</button>
+  <button class="vm-tab" onclick="tab('tonecircle')">Tone circle</button>
+  <button class="vm-tab" onclick="tab('harmony')">Harmony</button>
+  <button class="vm-tab" onclick="tab('inventory')">Phonemes</button>
+</div>
+
+<div id="p-scorer" class="vm-panel on">
+  <div class="tgt-row">
+    <label>Target tone</label>
+    <select id="toneSelect" onchange="updateSeeds()">
+      <option value="0">Disbelief — V≈8.5</option>
+      <option value="1">Irony — V≈8.0</option>
+      <option value="2">Dread — V≈7.5</option>
+      <option value="3">Sardonic — V≈7.0</option>
+      <option value="4">Regret — V≈6.5</option>
+      <option value="5">Grief — V≈6.1</option>
+      <option value="6">Wonder — V≈5.8</option>
+      <option value="7">Anticipation — V≈5.5</option>
+      <option value="8">Joy — V≈5.2</option>
+      <option value="9">Indignation — V≈5.0</option>
+      <option value="10">Wistfulness — V≈4.8</option>
+      <option value="11" selected>Pride — V≈4.5</option>
+      <option value="12">Resolve — V≈4.2</option>
+      <option value="13">Tenderness — V≈4.0</option>
+      <option value="14">Stoicism — V≈3.7</option>
+      <option value="15">Melancholy — V≈3.5</option>
+    </select>
+  </div>
+  <div class="d-row">
+    <label>D= dissonance (0=consonant · 10=deep dissonance)</label>
+    <input type="range" min="0" max="10" value="0" step="1" id="dSlider" oninput="document.getElementById('dVal').textContent=this.value">
+    <span class="d-val" id="dVal">0</span>
+  </div>
+  <textarea id="txt" placeholder="Paste a passage to score… or click Load Gettysburg Address to run the demo."></textarea>
+  <div class="row">
+    <button onclick="analyze()">Measure</button>
+    <button onclick="loadGettysburg()">Load Gettysburg Address</button>
+    <button onclick="clearAll()">Clear</button>
+  </div>
+  <div id="results" class="hidden" style="margin-top:1rem">
+    <div class="axis-cards">
+      <div class="ax"><div class="ax-sym">V=</div><div class="ax-val" id="axV">—</div><div class="ax-label">density · vowels/10 tokens</div></div>
+      <div class="ax"><div class="ax-sym">D=</div><div class="ax-val" id="axD">—</div><div class="ax-label">dissonance · surface vs depth</div></div>
+      <div class="ax"><div class="ax-sym">Δ=</div><div class="ax-val" id="axDelta">—</div><div class="ax-label">acceleration · tonal velocity</div></div>
+    </div>
+    <div class="tone-badge" id="toneBadge"></div>
+    <div class="bar-track"><div class="bar-fill" id="bFill" style="width:0%"></div><div class="bar-tgt" id="bTgt" style="left:50%"></div></div>
+    <div class="bar-ends"><span>3.0 · Absurdity</span><span>9.0 · Disbelief</span></div>
+    <div class="gap-note" id="gapNote"></div>
+    <div id="chordNote" class="chord-note hidden"></div>
+    <div class="ph-grid" id="phGrid"></div>
+    <div class="sec-grid" id="secGrid"></div>
+    <div class="high-label">High-V words detected</div>
+    <div class="pills" id="highW"></div>
+  </div>
+  <hr class="divider">
+  <div class="seed-label">Seed words for target tone</div>
+  <div class="pills" id="seedP"></div>
+  <p class="tagline">"The short-ɪ is the sound of persistence. Still. In. It." — Stuart Cooley, 2026</p>
+</div>
+
+<div id="p-viz" class="vm-panel">
+  <p style="font-size:13px;color:#666;margin-bottom:1rem">Run the scorer first. Charts update automatically.</p>
+  <canvas id="c1"></canvas>
+  <p style="font-size:11px;color:#999;text-align:center;margin:4px 0 1.5rem">V= by passage section · Δ= acceleration shown as slope</p>
+  <canvas id="c2"></canvas>
+  <p style="font-size:11px;color:#999;text-align:center;margin:4px 0 1rem">15-phoneme radar · weighted counts · bold labels = weighted phonemes</p>
+</div>
+
+<div id="p-tonecircle" class="vm-panel">
+  <div class="tc-grid" id="tcGrid"></div>
+  <p class="tagline">16-tone circle · calibrated against 420-word OED anchor set · © 2026 Stuart Cooley</p>
+</div>
+
+<div id="p-harmony" class="vm-panel">
+  <p style="font-size:13px;color:#666;margin-bottom:1rem">Emotional chords — tones sounding simultaneously. A chord is two or more tones whose combined phoneme fields create a register irreducible to either alone. Love is not a tone; it is the first named chord family.</p>
+  <div class="chord-grid" id="chordGrid"></div>
+  <p class="tagline">Harmony layer · Diapason Model · © 2026 Stuart Cooley</p>
+</div>
+
+<div id="p-inventory" class="vm-panel">
+  <div class="inv-grid" id="invGrid"></div>
+  <p class="tagline">15 American English vowel phonemes · 420-word OED anchor set · bordered = weighted for Still In It</p>
+</div>
+
+<script>
+const TONES=[
+  {n:"Disbelief",v:8.5,p:"ɪ / iː",seeds:["watched","distance","quizzical","emerged","tissue","observed","skull","witnessed","clinical","procedure","sterile","instrument"]},
+  {n:"Irony",v:8.0,p:"ɪ / ə",seeds:["insist","within","distinct","still","this","clinical","skim","diminish","implicit","sibilant","vivid","civic"]},
+  {n:"Dread",v:7.5,p:"ɔː / ə",seeds:["sorrow","long","drawn","loss","form","toll","worn","contort","transform","morning","accord","afford"]},
+  {n:"Sardonic",v:7.0,p:"ɪ / æ",seeds:["brisk","slipped","misfit","swift","grim","grit","blunt","stint","wince","crisp","blinkered","limit"]},
+  {n:"Regret",v:6.5,p:"ɛ / ə",seeds:["spent","neglect","fester","wretched","blunder","lessen","sullen","elegy","regret","elicit","welt","elusive"]},
+  {n:"Grief",v:6.1,p:"ɔː / ɪ",seeds:["sorrow","loss","gone","long","hold","soft","stillness","dissolve","hollow","rift","wilt","oblivion"]},
+  {n:"Wonder",v:5.8,p:"ʌ / iː",seeds:["subtle","struck","luminous","serenity","gleam","elusive","infinite","lithe","lilt","timbre","silhouette","iridescent"]},
+  {n:"Anticipation",v:5.5,p:"æ / eɪ",seeds:["ballistic","clarity","candor","grasp","traction","claim","framing","pattern","tangle","planned","angled","factual"]},
+  {n:"Joy",v:5.2,p:"aɪ / iː",seeds:["life","light","find","delight","vibrant","divine","ignite","invite","revive","thrive","aligned","decide"]},
+  {n:"Indignation",v:5.0,p:"ɪ / ʌ",seeds:["resist","insist","persist","grit","dismiss","rigid","strict","blunt","unjust","grudge","ruptured","unfit"]},
+  {n:"Wistfulness",v:4.8,p:"ɪ / ɛ",seeds:["linger","brink","glimmer","wistful","dimly","elicit","flit","flicker","hint","whisper","dwindle","brittle"]},
+  {n:"Pride",v:4.5,p:"aɪ / ɪ",seeds:["dignified","insightful","distinct","resilience","strive","initiative","incisive","justified","precise","principled","vigilant","invincible"]},
+  {n:"Resolve",v:4.2,p:"ɔː / eɪ",seeds:["momentum","testament","reckoning","persistence","equanimity","surrender","legacy","gravitas","laconic","stoic","candor","moral"]},
+  {n:"Tenderness",v:4.0,p:"ɛ / oʊ",seeds:["gentle","settle","held","felt","left","shelter","rest","kept","blessed","tender","softly","cherished"]},
+  {n:"Stoicism",v:3.7,p:"ə / ʌ",seeds:["flat","was","can","but","just","had","then","done","stood","held","kept","past"]},
+  {n:"Melancholy",v:3.5,p:"ɔː / ə",seeds:["lost","soft","long","gone","hollow","moss","autumn","crossing","cost","fog","dusk","hollow"]},
+];
+const CHORDS=[
+  {n:"Elegiac Love",eq:"Tenderness + Grief",ex:"'She was a beautiful child.' Two tones sounding at once — the ɔː of loss beneath the ɛ of tenderness. The chord of love that has already been taken."},
+  {n:"Parental Love",eq:"Tenderness + Pride",ex:"'Christina stopped crying. She just wanted to understand.' The ɛ of shelter meeting the aɪ of accomplished dignity. The chord of love that watches and waits."},
+  {n:"Civic Love",eq:"Pride + Resolve",ex:"The Gettysburg Address peroration. aɪ density rising into ɔː — the love of an institution one is willing to die for."},
+  {n:"Arriving Love",eq:"Tenderness + Wonder",ex:"First encounter. The ɛ of attention meeting the ʌ of astonishment. The chord of love before it has a name."},
+  {n:"Late Love",eq:"Tenderness + Regret",ex:"'Our paths didn't cross by chance; they crossed too late.' The love that recognises itself in the past tense."},
+  {n:"Dissonant Love",eq:"Tenderness + Disbelief",ex:"The Navy doctor scene — care present, horror present, neither cancelling the other. The chord that has no comfortable resolution."},
+];
+const PH=[
+  {s:"ɪ",n:"Short I",ex:"still,it,insist",w:1.4,hi:true,r:/\b(still|in|it|this|is|will|which|with|his|him|if|its|did|been|big|bit|bring|begin|civil|distinct|fill|film|finish|fit|fix|give|grim|grip|hint|hit|insist|initial|itch|kid|kill|king|kiss|lift|limit|lip|list|live|milk|mill|miss|mist|mix|quick|rid|rim|ring|risk|sip|sit|six|skill|skin|slim|slip|spin|split|spring|stick|stiff|sting|strip|swift|swim|swing|thick|thin|think|tilt|tin|tip|trim|win|wind|wing|wish|within|wit|zip|civic|vivid|implicit|signal|pivot|exist|infinite|sibilant|diminish|elicit|instinct|nimble|vigilance|incisive|indignant|indelible|resist|insidious|intrinsic|liberty|little|living|lives|fitting|field|conceived|dedicated|proposition|testing|nation|men|equal|endure|final|resting|rather|unfinished|increased|devotion|giving)\b/gi},
+  {s:"aɪ",n:"Long I",ex:"life,find,child",w:1.2,hi:true,r:/\b(life|find|time|like|my|by|why|try|mind|right|write|light|night|fight|might|sight|high|sky|lie|die|fly|cry|dry|buy|guy|eye|kind|blind|bind|child|wild|mild|smile|while|style|fire|hire|tire|wire|drive|alive|arrive|derive|divine|thrive|strive|revive|invite|ignite|delight|aligned|decide|vibrant|design|define|refine|combine|resign|remind|divide|provide|aside|inside|describe|vital|enlighten|arise|highly|died|vain|final)\b/gi},
+  {s:"ɔː",n:"Open O/OR",ex:"sorrow,loss,war",w:1.3,hi:true,r:/\b(all|also|awe|bought|broad|call|caught|cause|cost|dawn|dog|draw|fall|fault|fog|force|form|frog|frost|gone|got|hall|haul|jaw|law|long|loss|lost|nor|north|off|often|on|pause|saw|soft|song|sort|sought|spawn|stall|straw|strong|tall|talk|thought|toll|torn|toss|walk|wall|warm|warn|was|wash|watch|water|wrong|yawn|sorrow|moral|born|corn|core|door|floor|for|fore|four|more|ore|or|poor|roar|score|shore|snore|soar|store|swore|tore|wore|your|explore|ignore|restore|implore|rapport|contort|distort|transform|forth|war|honored|forward|scored|before|altogether|hallow|consecrate|devotion|remember|endure|advanced)\b/gi},
+  {s:"ə",n:"Schwa",ex:"the,a,of",w:0.8,hi:true,r:/\b(a|the|of|to|and|in|that|it|with|as|for|on|are|was|at|be|this|from|or|an|but|not|by|about|been|have|had|her|his|him|them|they|has|were|their|there|would|could|should|when|which|who|what|where|how|its|we|he|she|you|your|our|up|out|if|no|so|do|all|into|than|then|these|those|through|during|before|after|above|between|each|other|some|such|only|own|same|very|just|because|under|while|since|without|also|again|further|once|upon|ago|around|along|among|across|against|behind|below|beyond|beside|during|except|inside|outside|toward|until|within|without|rather|never|either|whether)\b/gi},
+  {s:"æ",n:"Flat A",ex:"back,battle,task",w:1.0,hi:false,r:/\b(back|black|fact|flat|had|has|have|man|map|match|can|cap|cat|catch|clap|crack|dad|dam|drag|fat|flag|gap|gas|grab|grand|hand|hat|lack|land|lap|last|laugh|mad|mass|nap|pack|pan|pass|pat|plan|ran|rap|rat|sand|sat|snap|stack|stand|stamp|tan|tap|track|trap|van|wax|wrap|band|bank|blank|bland|brand|damp|flash|frank|gland|grant|lamp|lance|plant|rank|ramp|rant|sang|sank|scan|slam|slang|slap|slash|span|stab|staff|strap|swam|swat|thank|tram|tramp|wrath|yank|battle|battlefield|fathers|carried|advanced|half|task|larger|rather)\b/gi},
+  {s:"eɪ",n:"Long A",ex:"name,state,claim",w:1.0,hi:false,r:/\b(able|age|aim|ancient|arrange|attain|await|became|blame|break|cake|came|case|chain|change|claim|crane|create|date|day|delay|drain|drape|escape|face|fade|fail|fake|fame|fate|flame|frame|gain|gaze|grace|grade|grain|great|hail|hate|haze|lace|lake|late|lay|made|mail|main|make|male|may|maze|name|pale|paint|paid|place|plain|plane|plate|play|praise|race|rail|rain|raise|rake|range|rate|ray|reign|remain|safe|sail|sake|same|save|say|scale|shame|shape|share|shake|slate|snake|space|stake|stain|state|stay|strain|strange|tail|take|tale|tame|train|trade|trail|vain|vale|wade|wait|wake|wave|way|weight|whale|care|dare|fare|glare|hare|pare|rare|spare|square|stare|swear|there|wear|bare|nation|dedicated|created|great|gave|take|place|say|remain|shall|consecrate)\b/gi},
+  {s:"ɛ",n:"Short E",ex:"dead,men,regret",w:1.0,hi:false,r:/\b(bed|best|blend|check|chest|deck|desk|dress|dread|edge|else|end|felt|fence|fetch|fled|flesh|fresh|friend|gem|get|guess|head|help|hen|kept|left|leg|lend|less|let|led|men|mess|met|net|next|pen|pet|quest|red|rest|rent|send|sense|set|shed|shelf|shell|smell|spend|step|stretch|swept|tell|ten|test|then|them|trend|when|went|well|weld|bent|blend|cleft|crest|debt|depth|felt|helm|jest|kelp|knelt|lest|melt|mend|neck|nest|peck|pelt|pest|self|sent|slept|smelt|speck|swept|theft|wept|yell|yet|dead|dedicated|measure|devotion|remember|never|seven|whether|endure|men|dead)\b/gi},
+  {s:"iː",n:"Long E",ex:"free,people,equal",w:1.0,hi:false,r:/\b(be|been|free|see|seen|need|keep|feel|real|deal|heal|meal|seal|steal|wheel|clean|cream|dream|gleam|green|mean|lean|bean|keen|queen|screen|stream|team|theme|these|tree|three|flee|knee|plea|sea|tea|we|me|he|she|elite|serene|supreme|between|achieve|believe|receive|perceive|relieve|retrieve|complete|concrete|delete|deplete|compete|discreet|esteem|extreme|machine|marine|obscene|routine|sincere|technique|unique|seize|freeze|breeze|each|reach|teach|speak|peak|lead|read|heat|beat|seat|neat|treat|feat|feed|seed|weed|need|heed|indeed|agreed|proceed|succeed|people|equal|freedom)\b/gi},
+  {s:"ɑː",n:"Open A",ex:"father,heart,far",w:1.0,hi:false,r:/\b(arm|art|bar|barn|car|card|cart|cast|dark|far|farm|fast|father|glass|grass|hard|harm|heart|jar|large|last|lark|mark|march|palm|park|part|pass|past|path|raft|scarf|shark|sharp|smart|star|start|tar|task|vast|yarn|calm|psalm|balm|qualm|behalf|class|brass|mass|lass|bass|crass|ask|flask|clasp|blast|grasp|mast|contrast|enhance|advance|chance|dance|glance|lance|prance|romance|stance|trance|demand|command|expand|understand|fathers|hearts|ardor|largely|rather|harder|larger|half)\b/gi},
+  {s:"oʊ",n:"Long O",ex:"know,home,soul",w:0.9,hi:false,r:/\b(go|know|home|old|cold|bold|gold|hold|told|fold|mold|role|pole|hole|soul|whole|stole|console|control|below|bestow|elbow|flow|glow|grow|low|mow|row|show|slow|snow|sow|stow|throw|toe|tow|woe|woke|wove|wrote|broke|chose|close|cone|cope|cove|dome|dote|drove|froze|globe|gore|grove|hose|hope|joke|lone|lore|mode|mole|more|morose|most|note|nose|ode|owe|phone|poke|pose|probe|prone|prose|robe|rode|rope|rose|rove|scope|slope|smoke|sole|spoke|stone|store|stove|stroke|those|throne|tone|tore|vote|whole|wore|zone|yoke|no|so|nobly|noble|console)\b/gi},
+  {s:"ʊ",n:"Short U (foot)",ex:"good,should,would",w:0.9,hi:false,r:/\b(book|cook|foot|good|hook|look|nook|push|put|rook|shook|should|stood|took|wood|wool|would|brook|crook|full|bull|bush|cushion|hood|hoof|soot|wolf|sugar|surely|could|would|should|put|full|pull|push|look|good|stood|understood|forsook)\b/gi},
+  {s:"uː",n:"Long U",ex:"true,through,who",w:0.9,hi:false,r:/\b(blue|clue|crew|dew|drew|due|flew|glue|grew|knew|new|rue|stew|threw|true|two|who|you|blew|brew|chew|cue|few|flu|flue|hew|hue|lieu|mew|pew|queue|screw|shoe|slew|spew|sue|view|woo|zoo|abuse|accrue|argue|avenue|bamboo|canoe|cashew|debut|ensue|issue|menu|pursue|renew|rescue|revenue|review|statue|subdue|tissue|value|venue|virtue|yahoo|move|prove|groove|approve|improve|remove|soothe|smooth|choose|lose|whose|bruise|cruise|fuse|muse|use|through|do|to|who|new|true|union|future)\b/gi},
+  {s:"ʌ",n:"Short U (strut)",ex:"but,struck,us",w:1.0,hi:false,r:/\b(but|cut|gun|gust|gut|hub|hug|hum|hunt|hut|jug|jump|just|luck|lug|lung|mud|mug|must|nut|plug|pub|pun|punt|pup|rub|rug|rum|run|rung|rut|shrub|shrug|shun|shut|slug|slum|slur|smug|snub|snug|stub|stuck|stud|stun|stung|sub|suck|sum|sun|sung|sunk|sup|thud|thug|thumb|tug|tun|tub|dull|dumb|dunk|duck|dump|dusk|dust|gum|fun|flung|fund|fuss|glum|grub|grudge|gruff|gulp|gunk|stump|brunt|bunk|bun|blunt|brush|bulk|struck|subtle|button|couple|double|trouble|bubble|buckle|bundle|butter|clutter|cluster|country|current|culture|custom|flutter|gutter|hunger|jungle|lumber|muscle|muddle|mumble|mutter|puzzle|rubber|ruffle|rumble|rustle|stumble|supper|thunder|tumble|tunnel|upper|usher|utter|vulture|wonder|under|upon|but|us|thus|much|struggle|unfinished|above|government|suffering|something|nothing|come|some)\b/gi},
+  {s:"aʊ",n:"OW diphthong",ex:"out,now,ground",w:0.9,hi:false,r:/\b(out|about|house|now|how|down|town|found|ground|sound|round|pound|count|loud|cloud|crowd|proud|shout|doubt|scout|sprout|south|mouth|bounce|ounce|pounce|bound|mound|wound|allow|bow|brow|browse|clown|cow|crown|drown|frown|gown|growl|howl|jowl|meow|owl|plow|plough|prowl|scowl|snout|sow|wow|fowl|towel|vowel|power|tower|flower|shower|hour|our|devour|empower|around|compound|surround|profound|renowned|resound|expound|account|amount|discount|recount|surmount)\b/gi},
+  {s:"ɔɪ",n:"OY diphthong",ex:"choice,voice,joy",w:0.9,hi:false,r:/\b(choice|voice|noise|join|joy|royal|loyal|coin|coil|foil|hoist|moist|poise|spoil|toil|void|annoy|employ|enjoy|destroy|deploy|rejoice|exploit|appoint|disappoint|turmoil|embroil|recoil|boys|exploit|rejoice|anointed|appointed|boisterous|rejoiced)\b/gi},
+];
+const GETTYSBURG=`Four score and seven years ago our fathers brought forth on this continent a new nation conceived in Liberty and dedicated to the proposition that all men are created equal Now we are engaged in a great civil war testing whether that nation or any nation so conceived and so dedicated can long endure We are met on a great battle field of that war We have come to dedicate a portion of that field as a final resting place for those who here gave their lives that that nation might live It is altogether fitting and proper that we should do this But in a larger sense we can not dedicate we can not consecrate we can not hallow this ground The brave men living and dead who struggled here have consecrated it far above our poor power to add or detract The world will little note nor long remember what we say here but it can never forget what they did here It is for us the living rather to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced It is rather for us to be here dedicated to the great task remaining before us that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion that we here highly resolve that these dead shall not have died in vain that this nation under God shall have a new birth of freedom and that government of the people by the people for the people shall not perish from the earth`;
+let lastSections=[],lastCounts=[];
+function score(text){const tokens=text.trim().split(/\s+/);const n=tokens.length;if(n<3)return null;const counts=PH.map(p=>{const m=text.match(p.r)||[];p.r.lastIndex=0;return m.length;});const weighted=counts.reduce((s,c,i)=>s+c*PH[i].w,0);const v=Math.round(weighted/n*10*10)/10;return{v,n,counts,tokens};}
+function sectionScore(words){const t=words.join(' ');const n=words.length;const w=PH.reduce((s,p)=>{const m=t.match(p.r)||[];p.r.lastIndex=0;return s+m.length*p.w;},0);return Math.round(w/n*10*10)/10;}
+function closestTone(v){return TONES.reduce((b,t)=>Math.abs(t.v-v)<Math.abs(b.v-v)?t:b,TONES[0]);}
+function analyze(){const text=document.getElementById('txt').value.trim();if(!text)return;const res=score(text);if(!res)return;const{v,n,counts,tokens}=res;const d=parseInt(document.getElementById('dSlider').value);const toneIdx=parseInt(document.getElementById('toneSelect').value);const target=TONES[toneIdx].v;const ct=closestTone(v);const sz=Math.max(1,Math.floor(tokens.length/5));const secs=[];for(let i=0;i<5;i++){const sl=tokens.slice(i*sz,(i+1)*sz);if(sl.length>2)secs.push({label:'Section '+(i+1),v:sectionScore(sl)});}lastSections=secs;lastCounts=counts;let delta='—';if(secs.length>=2){const diffs=secs.slice(1).map((s,i)=>s.v-secs[i].v);const maxD=diffs.reduce((m,d)=>Math.abs(d)>Math.abs(m)?d:m,0);delta=(maxD>=0?'+':'')+maxD.toFixed(2);}
+document.getElementById('axV').textContent=v.toFixed(1);document.getElementById('axD').textContent=d;document.getElementById('axDelta').textContent=delta;document.getElementById('toneBadge').textContent=ct.n+' · '+ct.p+' · V='+v.toFixed(1);const pct=Math.min(100,Math.max(0,(v-3.0)/(9.0-3.0)*100));document.getElementById('bFill').style.width=Math.round(pct)+'%';const tpct=Math.min(100,Math.max(0,(target-3.0)/(9.0-3.0)*100));document.getElementById('bTgt').style.left=Math.round(tpct)+'%';const diff=v-target;let gMsg;if(Math.abs(diff)<=0.2)gMsg='On target for '+TONES[toneIdx].n+' (V≈'+target.toFixed(1)+'). No adjustment needed.';else if(diff<0)gMsg=(Math.abs(diff)).toFixed(1)+' below target. Increase ɪ and ɔː density.';else gMsg=diff.toFixed(1)+' above target. Reduce weighted phonemes — let schwa carry rhythm.';document.getElementById('gapNote').textContent=gMsg;const cNote=document.getElementById('chordNote');if(d>=5){const chord=CHORDS.find(c=>c.eq.toLowerCase().includes(ct.n.toLowerCase()))||null;if(chord){cNote.textContent='Harmonic chord detected: '+chord.n+' ('+chord.eq+') — '+chord.ex;cNote.classList.remove('hidden');}else{cNote.textContent='High dissonance (D='+d+'): surface tone and content are in tension.';cNote.classList.remove('hidden');}}else{cNote.classList.add('hidden');}
+const maxC=Math.max(...counts,1);const pg=document.getElementById('phGrid');pg.innerHTML='';PH.forEach((p,i)=>{const d2=document.createElement('div');d2.className='ph'+(p.hi?' ph-hi':'');d2.innerHTML='<div class="ph-sym">'+p.s+'</div><div class="ph-n">'+p.n+'</div><div class="ph-ct">'+counts[i]+'</div><div class="ph-bar"><div class="ph-bf" style="width:'+Math.round(counts[i]/maxC*100)+'%"></div></div><div class="ph-wt">×'+p.w+'</div>';pg.appendChild(d2);});const sg=document.getElementById('secGrid');sg.innerHTML='';const maxSV=Math.max(...secs.map(s=>s.v),1);let pv=null;secs.forEach(s=>{const row=document.createElement('div');row.className='sec-row';const dStr=pv!==null?((s.v-pv>=0?'+':'')+(s.v-pv).toFixed(2)):'—';const pct2=Math.round(s.v/maxSV*100);row.innerHTML='<span class="sec-label">'+s.label+'</span><div class="sec-bar-wrap"><div class="sec-bar" style="width:'+pct2+'%"></div></div><span class="sec-v">'+s.v.toFixed(1)+'</span><span class="sec-d">Δ='+dStr+'</span>';sg.appendChild(row);pv=s.v;});const words=text.toLowerCase().split(/\W+/).filter(w=>w.length>3);const hw=[];words.forEach(w=>{PH.filter(p=>p.hi).forEach(p=>{if(!hw.includes(w)&&p.r.test(w))hw.push(w);p.r.lastIndex=0;});});const hwEl=document.getElementById('highW');hwEl.innerHTML='';[...new Set(hw)].slice(0,16).forEach(w=>{const s=document.createElement('span');s.className='pill';s.textContent=w;hwEl.appendChild(s);});document.getElementById('results').classList.remove('hidden');drawCharts();}
+function drawCharts(){drawLine();drawRadar();}
+function drawLine(){const c=document.getElementById('c1');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastSections.length)return;const pad={t:20,r:20,b:30,l:40};const iw=w-pad.l-pad.r,ih=h-pad.t-pad.b;const vals=lastSections.map(s=>s.v);const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;const sx=(i)=>pad.l+i/(vals.length-1)*iw;const sy=(v)=>pad.t+ih-(v-mn)/(mx-mn)*ih;const clrPri=document.body.style.color||'#111';const clrSec='#666';const clrBor='#e0e0e0';ctx.strokeStyle=clrBor;ctx.lineWidth=0.5;[0,0.25,0.5,0.75,1].forEach(f=>{const y=pad.t+ih*f;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='right';ctx.fillText((mx-(mx-mn)*f).toFixed(1),pad.l-4,y+3);});ctx.beginPath();vals.forEach((v,i)=>{i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v));});ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),4,0,Math.PI*2);ctx.fillStyle='#111';ctx.fill();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('S'+(i+1),sx(i),h-10);ctx.fillStyle='#111';ctx.fillText(v.toFixed(1),sx(i),sy(v)-8);});}
+function drawRadar(){const c=document.getElementById('c2');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastCounts.length)return;const cx=w/2,cy=h/2,R=Math.min(w,h)/2-30;const n=PH.length;const max=Math.max(...lastCounts,1);[0.25,0.5,0.75,1].forEach(f=>{ctx.beginPath();for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.lineTo(cx+Math.cos(a)*R*f,cy+Math.sin(a)*R*f);}ctx.closePath();ctx.strokeStyle='#e0e0e0';ctx.lineWidth=0.5;ctx.stroke();});for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=0.5;ctx.stroke();const lx=cx+Math.cos(a)*(R+16),ly=cy+Math.sin(a)*(R+16);ctx.fillStyle=PH[i].hi?'#111':'#999';ctx.font=(PH[i].hi?'bold ':'')+'10px sans-serif';ctx.textAlign='center';ctx.fillText(PH[i].s,lx,ly+3);}ctx.beginPath();lastCounts.forEach((v,i)=>{const a=i/n*Math.PI*2-Math.PI/2;const r=v/max*R;i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);});ctx.closePath();ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='rgba(0,0,0,0.06)';ctx.fill();}
+function updateSeeds(){const idx=parseInt(document.getElementById('toneSelect').value);const tone=TONES[idx];const sp=document.getElementById('seedP');sp.innerHTML='';tone.seeds.forEach(w=>{const b=document.createElement('button');b.className='spill';b.textContent=w;b.onclick=()=>{const ta=document.getElementById('txt');const pos=ta.selectionStart;ta.value=ta.value.slice(0,pos)+w+' '+ta.value.slice(pos);ta.focus();};sp.appendChild(b);});}
+function loadGettysburg(){document.getElementById('txt').value=GETTYSBURG;document.getElementById('toneSelect').value='11';document.getElementById('dSlider').value='3';document.getElementById('dVal').textContent='3';updateSeeds();analyze();}
+function clearAll(){document.getElementById('txt').value='';document.getElementById('results').classList.add('hidden');document.getElementById('chordNote').classList.add('hidden');}
+function tab(id){document.querySelectorAll('.vm-tab').forEach((b,i)=>b.classList.toggle('on',['scorer','viz','tonecircle','harmony','inventory'][i]===id));document.querySelectorAll('.vm-panel').forEach(p=>p.classList.remove('on'));document.getElementById('p-'+id).classList.add('on');if(id==='tonecircle')renderTC();if(id==='harmony')renderHarmony();if(id==='inventory')renderInv();if(id==='viz')drawCharts();}
+function renderTC(){const g=document.getElementById('tcGrid');if(g.children.length)return;TONES.forEach(t=>{const d=document.createElement('div');d.className='tc-item';d.innerHTML='<div class="tc-tone">'+t.n+'</div><div class="tc-ph">'+t.p+'</div><div class="tc-v">V≈'+t.v.toFixed(1)+'</div><div class="tc-seeds">'+t.seeds.slice(0,5).join(' · ')+'</div>';g.appendChild(d);});}
+function renderHarmony(){const g=document.getElementById('chordGrid');if(g.children.length)return;CHORDS.forEach(c=>{const d=document.createElement('div');d.className='chord-item';d.innerHTML='<div class="chord-name">'+c.n+'</div><div class="chord-eq">'+c.eq+'</div><div class="chord-ex">'+c.ex+'</div>';g.appendChild(d);});}
+function renderInv(){const g=document.getElementById('invGrid');if(g.children.length)return;PH.forEach(p=>{const d=document.createElement('div');d.className='inv-item'+(p.hi?' inv-hi':'');d.innerHTML='<div class="inv-sym">'+p.s+'</div><div class="inv-name">'+p.n+'</div><div class="inv-ex">'+p.ex+'</div><div class="inv-wt">'+(p.hi?'×'+p.w+' weighted':'×'+p.w)+'</div>';g.appendChild(d);});}
+updateSeeds();
+</script>
+</body>
+</html>
