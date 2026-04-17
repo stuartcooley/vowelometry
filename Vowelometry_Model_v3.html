@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0063)file:///C:/Users/coole/Downloads/vowelometry_diapason_v3_4.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vowelometry™ · Diapason Model v3.0 · © 2026 Stuart Cooley</title>
 <style>
@@ -102,11 +102,10 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
 <div class="vm-eye">Vowelometry™ · Diapason Model · v3.0 · © 2026 Stuart Cooley · Invented March 2026</div>
 
 <div class="vm-tabs">
-  <button class="vm-tab on" onclick="tab('scorer')">Scorer</button>
-  <button class="vm-tab" onclick="tab('viz')">Visualise</button>
-  <button class="vm-tab" onclick="tab('tonecircle')">Tone circle</button>
-  <button class="vm-tab" onclick="tab('harmony')">Harmony</button>
-  <button class="vm-tab" onclick="tab('inventory')">Phonemes</button>
+  <button class="vm-tab on" onclick="tab(&#39;scorer&#39;)">Scorer</button>
+  <button class="vm-tab" onclick="tab(&#39;viz&#39;)">Visualise</button>
+  <button class="vm-tab" onclick="tab(&#39;tonecircle&#39;)">Tone circle</button>
+  <button class="vm-tab" onclick="tab(&#39;inventory&#39;)">Phonemes</button>
 </div>
 
 <div id="p-scorer" class="vm-panel on">
@@ -125,7 +124,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
       <option value="9">Indignation — V≈5.0</option>
       <option value="10">Wistfulness — V≈4.8</option>
       <option value="11">Unease — V≈4.7</option>
-      <option value="12" selected>Pride — V≈4.5</option>
+      <option value="12" selected="">Pride — V≈4.5</option>
       <option value="13">Defiance — V≈4.4</option>
       <option value="14">Resolve — V≈4.2</option>
       <option value="15">Acceptance — V≈4.1</option>
@@ -138,7 +137,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
   </div>
   <div class="d-row">
     <label>D= dissonance (0=consonant · 10=deep dissonance)</label>
-    <input type="range" min="0" max="10" value="0" step="1" id="dSlider" oninput="document.getElementById('dVal').textContent=this.value">
+    <input type="range" min="0" max="10" value="0" step="1" id="dSlider" oninput="document.getElementById(&#39;dVal&#39;).textContent=this.value">
     <span class="d-val" id="dVal">0</span>
   </div>
   <textarea id="txt" placeholder="Paste a passage to score… or click Load Gettysburg Address to run the demo."></textarea>
@@ -157,7 +156,6 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
     <div class="bar-track"><div class="bar-fill" id="bFill" style="width:0%"></div><div class="bar-tgt" id="bTgt" style="left:50%"></div></div>
     <div class="bar-ends"><span>3.3 · Longing</span><span>9.0 · Disbelief</span></div>
     <div class="gap-note" id="gapNote"></div>
-    <div id="chordNote" class="chord-note hidden"></div>
     <div class="ph-grid" id="phGrid"></div>
     <div class="sec-grid" id="secGrid"></div>
     <div class="high-label">High-V words detected</div>
@@ -165,7 +163,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
   </div>
   <hr class="divider">
   <div class="seed-label">Seed words for target tone</div>
-  <div class="pills" id="seedP"></div>
+  <div class="pills" id="seedP"><button class="spill">dignified</button><button class="spill">insightful</button><button class="spill">distinct</button><button class="spill">resilience</button><button class="spill">strive</button><button class="spill">initiative</button><button class="spill">incisive</button><button class="spill">justified</button><button class="spill">precise</button><button class="spill">principled</button><button class="spill">vigilant</button><button class="spill">invincible</button></div>
   <p class="tagline">"The short-ɪ is the sound of persistence. Still. In. It." — Stuart Cooley, 2026</p>
 </div>
 
@@ -178,15 +176,10 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
 </div>
 
 <div id="p-tonecircle" class="vm-panel">
-  <div class="tc-grid" id="tcGrid"></div>
+  <canvas id="tcCanvas" style="width:100%;max-width:680px;height:680px;display:block;margin:0 auto"></canvas>
   <p class="tagline">21-tone register · calibrated against 420-word OED anchor set · © 2026 Stuart Cooley</p>
 </div>
 
-<div id="p-harmony" class="vm-panel">
-  <p style="font-size:13px;color:#666;margin-bottom:1rem">Emotional chords — tones sounding simultaneously. A chord is two or more tones whose combined phoneme fields create a register irreducible to either alone. Love is not a tone; it is the first named chord family.</p>
-  <div class="chord-grid" id="chordGrid"></div>
-  <p class="tagline">Harmony layer · Diapason Model · © 2026 Stuart Cooley</p>
-</div>
 
 <div id="p-inventory" class="vm-panel">
   <div class="inv-grid" id="invGrid"></div>
@@ -243,24 +236,186 @@ const PH=[
   {s:"ɔɪ",n:"OY diphthong",ex:"choice,voice,joy",w:0.9,hi:false,r:/\b(choice|voice|noise|join|joy|royal|loyal|coin|coil|foil|hoist|moist|poise|spoil|toil|void|annoy|employ|enjoy|destroy|deploy|rejoice|exploit|appoint|disappoint|turmoil|embroil|recoil|boys|exploit|rejoice|anointed|appointed|boisterous|rejoiced)\b/gi},
 ];
 const GETTYSBURG=`Four score and seven years ago our fathers brought forth on this continent a new nation conceived in Liberty and dedicated to the proposition that all men are created equal Now we are engaged in a great civil war testing whether that nation or any nation so conceived and so dedicated can long endure We are met on a great battle field of that war We have come to dedicate a portion of that field as a final resting place for those who here gave their lives that that nation might live It is altogether fitting and proper that we should do this But in a larger sense we can not dedicate we can not consecrate we can not hallow this ground The brave men living and dead who struggled here have consecrated it far above our poor power to add or detract The world will little note nor long remember what we say here but it can never forget what they did here It is for us the living rather to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced It is rather for us to be here dedicated to the great task remaining before us that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion that we here highly resolve that these dead shall not have died in vain that this nation under God shall have a new birth of freedom and that government of the people by the people for the people shall not perish from the earth`;
-let lastSections=[],lastCounts=[];
-function score(text){const tokens=text.trim().split(/\s+/);const n=tokens.length;if(n<3)return null;const counts=PH.map(p=>{const m=text.match(p.r)||[];p.r.lastIndex=0;return m.length;});const weighted=counts.reduce((s,c,i)=>s+c*PH[i].w,0);const v=Math.round(weighted/n*10*10)/10;return{v,n,counts,tokens};}
-function sectionScore(words){const t=words.join(' ');const n=words.length;const w=PH.reduce((s,p)=>{const m=t.match(p.r)||[];p.r.lastIndex=0;return s+m.length*p.w;},0);return Math.round(w/n*10*10)/10;}
+let lastSections=[],lastCounts=[],activeToneIdx=null,lastToneFreq={};
+window.addEventListener('resize',()=>{if(document.getElementById('p-tonecircle').classList.contains('on'))renderTC(activeToneIdx,lastToneFreq);});
+const FW=new Set(['in','it','this','is','will','which','with','his','him','if','its','did','been','the','a','of','to','and','that','as','for','on','are','was','at','be','from','or','an','but','not','by','about','have','had','her','them','they','has','were','their','there','would','could','should','when','who','what','where','how','we','he','she','you','your','our','up','out','so','do','all','into','than','then','these','those','through','during','before','after','each','other','some','such','only','own','same','very','just','because','under','while','since','without','also','again','once','upon','around','among','across','against','behind','below','beyond','beside','except','inside','outside','toward','until','within','rather','never','either','whether','no','yes','can','may','shall','here','now','more','new','us','thus','much','come','far','say','too','one','two','its','men']);
+const SF=5.0;
+function scoreTokens(tokens){
+  let total=0,cn=0;
+  const phCounts={};PH.forEach(p=>phCounts[p.s]=0);
+  tokens.forEach(tok=>{
+    const w=tok.toLowerCase().replace(/[^a-z]/g,'');
+    if(FW.has(w)||w.length<2)return;
+    cn++;
+    let bestW=0,bestS=null;
+    PH.forEach(p=>{if(p.r.test(w)&&p.w>bestW){bestW=p.w;bestS=p.s;}p.r.lastIndex=0;});
+    if(bestS){total+=bestW;phCounts[bestS]++;}else{total+=0.7;}
+  });
+  const v=cn>0?Math.round((total/cn)*SF*10)/10:0;
+  return{v,cn,phCounts};
+}
+function closestToneIdx(v){let bi=0;TONES.forEach((t,i)=>{if(Math.abs(t.v-v)<Math.abs(TONES[bi].v-v))bi=i;});return bi;}
+function score(text){
+  const tokens=text.trim().split(/\s+/);
+  if(tokens.length<3)return null;
+  const{v,cn,phCounts}=scoreTokens(tokens);
+  // sentence-level: split on . ! ?
+  const sents=text.split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>0);
+  // 10-token windows
+  const wins=[];for(let i=0;i<tokens.length;i+=10){wins.push(tokens.slice(i,i+10));}
+  // tone frequency from windows
+  const toneFreq={};
+  wins.forEach(w=>{const{v:wv,cn:wcn}=scoreTokens(w);if(wcn>=2){const ti=closestToneIdx(wv);const tn=TONES[ti].n;toneFreq[tn]=(toneFreq[tn]||0)+1;}});
+  // section scores (5 sections for viz)
+  const sz=Math.max(1,Math.floor(tokens.length/5));
+  const sections=[];
+  for(let i=0;i<5;i++){const sl=tokens.slice(i*sz,(i+1)*sz);if(sl.length>2){const{v:sv}=scoreTokens(sl);sections.push({label:'S'+(i+1),v:sv});}}
+  return{v,cn,phCounts,tokens,sections,toneFreq};
+}
 function closestTone(v){return TONES.reduce((b,t)=>Math.abs(t.v-v)<Math.abs(b.v-v)?t:b,TONES[0]);}
-function analyze(){const text=document.getElementById('txt').value.trim();if(!text)return;const res=score(text);if(!res)return;const{v,n,counts,tokens}=res;const d=parseInt(document.getElementById('dSlider').value);const toneIdx=parseInt(document.getElementById('toneSelect').value);const target=TONES[toneIdx].v;const ct=closestTone(v);const sz=Math.max(1,Math.floor(tokens.length/5));const secs=[];for(let i=0;i<5;i++){const sl=tokens.slice(i*sz,(i+1)*sz);if(sl.length>2)secs.push({label:'Section '+(i+1),v:sectionScore(sl)});}lastSections=secs;lastCounts=counts;let delta='—';if(secs.length>=2){const diffs=secs.slice(1).map((s,i)=>s.v-secs[i].v);const maxD=diffs.reduce((m,d)=>Math.abs(d)>Math.abs(m)?d:m,0);delta=(maxD>=0?'+':'')+maxD.toFixed(2);}
-const vRaw=v;const vDisplay=Math.min(v,9.0);const overflowWarning=vRaw>9.0;document.getElementById('axV').textContent=vDisplay.toFixed(1)+(overflowWarning?' ⚠':'');document.getElementById('axD').textContent=d;document.getElementById('axDelta').textContent=delta;document.getElementById('toneBadge').textContent=ct.n+' · '+ct.p+' · V='+vDisplay.toFixed(1)+(overflowWarning?' — score capped at 9.0: passage too short for reliable measurement':'');const pct=Math.min(100,Math.max(0,(vDisplay-3.0)/(9.0-3.0)*100));document.getElementById('bFill').style.width=Math.round(pct)+'%';const tpct=Math.min(100,Math.max(0,(target-3.0)/(9.0-3.0)*100));document.getElementById('bTgt').style.left=Math.round(tpct)+'%';const diff=vDisplay-target;let gMsg;if(overflowWarning)gMsg='Score capped at 9.0 — passage too short for reliable measurement. Paste at least 30 words for an accurate reading.';else if(Math.abs(diff)<=0.2)gMsg='On target for '+TONES[toneIdx].n+' (V≈'+target.toFixed(1)+'). No adjustment needed.';else if(diff<0)gMsg=(Math.abs(diff)).toFixed(1)+' below target. Increase ɪ and ɔː density.';else gMsg=diff.toFixed(1)+' above target. Reduce weighted phonemes — let schwa carry rhythm.';document.getElementById('gapNote').textContent=gMsg;const cNote=document.getElementById('chordNote');if(d>=5){const chord=CHORDS.find(c=>c.eq.toLowerCase().includes(ct.n.toLowerCase()))||null;if(chord){cNote.textContent='Harmonic chord detected: '+chord.n+' ('+chord.eq+') — '+chord.ex;cNote.classList.remove('hidden');}else{cNote.textContent='High dissonance (D='+d+'): surface tone and content are in tension.';cNote.classList.remove('hidden');}}else{cNote.classList.add('hidden');}
-const maxC=Math.max(...counts,1);const pg=document.getElementById('phGrid');pg.innerHTML='';PH.forEach((p,i)=>{const d2=document.createElement('div');d2.className='ph'+(p.hi?' ph-hi':'');d2.innerHTML='<div class="ph-sym">'+p.s+'</div><div class="ph-n">'+p.n+'</div><div class="ph-ct">'+counts[i]+'</div><div class="ph-bar"><div class="ph-bf" style="width:'+Math.round(counts[i]/maxC*100)+'%"></div></div><div class="ph-wt">×'+p.w+'</div>';pg.appendChild(d2);});const sg=document.getElementById('secGrid');sg.innerHTML='';const maxSV=Math.max(...secs.map(s=>s.v),1);let pv=null;secs.forEach(s=>{const row=document.createElement('div');row.className='sec-row';const dStr=pv!==null?((s.v-pv>=0?'+':'')+(s.v-pv).toFixed(2)):'—';const pct2=Math.round(s.v/maxSV*100);row.innerHTML='<span class="sec-label">'+s.label+'</span><div class="sec-bar-wrap"><div class="sec-bar" style="width:'+pct2+'%"></div></div><span class="sec-v">'+s.v.toFixed(1)+'</span><span class="sec-d">Δ='+dStr+'</span>';sg.appendChild(row);pv=s.v;});const words=text.toLowerCase().split(/\W+/).filter(w=>w.length>3);const hw=[];words.forEach(w=>{PH.filter(p=>p.hi).forEach(p=>{if(!hw.includes(w)&&p.r.test(w))hw.push(w);p.r.lastIndex=0;});});const hwEl=document.getElementById('highW');hwEl.innerHTML='';[...new Set(hw)].slice(0,16).forEach(w=>{const s=document.createElement('span');s.className='pill';s.textContent=w;hwEl.appendChild(s);});document.getElementById('results').classList.remove('hidden');drawCharts();}
+function analyze(){
+  const text=document.getElementById('txt').value.trim();if(!text)return;
+  const res=score(text);if(!res)return;
+  const{v,cn,phCounts,tokens,sections,toneFreq}=res;
+  lastSections=sections;lastCounts=PH.map(p=>phCounts[p.s]||0);lastToneFreq=toneFreq;
+  const d=parseInt(document.getElementById('dSlider').value);
+  const toneIdx=parseInt(document.getElementById('toneSelect').value);
+  const target=TONES[toneIdx].v;
+  const ct=closestTone(v);
+  const vDisplay=Math.min(v,9.0);
+  const overflowWarning=v>9.0;
+  let delta='—';
+  if(sections.length>=2){const diffs=sections.slice(1).map((s,i)=>s.v-sections[i].v);const maxD=diffs.reduce((m,d)=>Math.abs(d)>Math.abs(m)?d:m,0);delta=(maxD>=0?'+':'')+maxD.toFixed(2);}
+  document.getElementById('axV').textContent=vDisplay.toFixed(1)+(overflowWarning?' ⚠':'');
+  document.getElementById('axD').textContent=d;
+  document.getElementById('axDelta').textContent=delta;
+  document.getElementById('toneBadge').textContent=ct.n+' · '+ct.p+' · V='+vDisplay.toFixed(1);
+  const pct=Math.min(100,Math.max(0,(vDisplay-3.0)/(9.0-3.0)*100));
+  document.getElementById('bFill').style.width=Math.round(pct)+'%';
+  const tpct=Math.min(100,Math.max(0,(target-3.0)/(9.0-3.0)*100));
+  document.getElementById('bTgt').style.left=Math.round(tpct)+'%';
+  const diff=vDisplay-target;
+  let gMsg;
+  if(overflowWarning)gMsg='Score capped at 9.0 — passage too short for reliable measurement. Paste at least 30 words.';
+  else if(Math.abs(diff)<=0.2)gMsg='On target for '+TONES[toneIdx].n+' (V≈'+target.toFixed(1)+'). No adjustment needed.';
+  else if(diff<0)gMsg=Math.abs(diff).toFixed(1)+' below target. Increase ɪ and ɔː density.';
+  else gMsg=diff.toFixed(1)+' above target. Reduce weighted phonemes — let schwa carry rhythm.';
+  document.getElementById('gapNote').textContent=gMsg;
+  // phoneme grid
+  const maxC=Math.max(...lastCounts,1);
+  const pg=document.getElementById('phGrid');pg.innerHTML='';
+  PH.forEach((p,i)=>{const d2=document.createElement('div');d2.className='ph'+(p.hi?' ph-hi':'');d2.innerHTML='<div class="ph-sym">'+p.s+'</div><div class="ph-n">'+p.n+'</div><div class="ph-ct">'+lastCounts[i]+'</div><div class="ph-bar"><div class="ph-bf" style="width:'+Math.round(lastCounts[i]/maxC*100)+'%"></div></div><div class="ph-wt">×'+p.w+'</div>';pg.appendChild(d2);});
+  // section grid
+  const sg=document.getElementById('secGrid');sg.innerHTML='';
+  const maxSV=Math.max(...sections.map(s=>s.v),1);let pv=null;
+  sections.forEach(s=>{const row=document.createElement('div');row.className='sec-row';const dStr=pv!==null?((s.v-pv>=0?'+':'')+(s.v-pv).toFixed(2)):'—';const pct2=Math.round(s.v/maxSV*100);row.innerHTML='<span class="sec-label">'+s.label+'</span><div class="sec-bar-wrap"><div class="sec-bar" style="width:'+pct2+'%"></div></div><span class="sec-v">'+s.v.toFixed(1)+'</span><span class="sec-d">Δ='+dStr+'</span>';sg.appendChild(row);pv=s.v;});
+  // high-V words
+  const words=text.toLowerCase().split(/\W+/).filter(w=>w.length>3&&!FW.has(w));
+  const hw=[];
+  words.forEach(w=>{PH.filter(p=>p.hi).forEach(p=>{if(!hw.includes(w)&&p.r.test(w))hw.push(w);p.r.lastIndex=0;});});
+  const hwEl=document.getElementById('highW');hwEl.innerHTML='';
+  [...new Set(hw)].slice(0,16).forEach(w=>{const s=document.createElement('span');s.className='pill';s.textContent=w;hwEl.appendChild(s);});
+  document.getElementById('results').classList.remove('hidden');
+  activeToneIdx=TONES.indexOf(ct);
+  if(document.getElementById('p-tonecircle').classList.contains('on'))renderTC(activeToneIdx,lastToneFreq);
+  drawCharts();
+}
 function drawCharts(){drawLine();drawRadar();}
-function drawLine(){const c=document.getElementById('c1');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastSections.length)return;const pad={t:20,r:20,b:30,l:40};const iw=w-pad.l-pad.r,ih=h-pad.t-pad.b;const vals=lastSections.map(s=>s.v);const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;const sx=(i)=>pad.l+i/(vals.length-1)*iw;const sy=(v)=>pad.t+ih-(v-mn)/(mx-mn)*ih;const clrPri=document.body.style.color||'#111';const clrSec='#666';const clrBor='#e0e0e0';ctx.strokeStyle=clrBor;ctx.lineWidth=0.5;[0,0.25,0.5,0.75,1].forEach(f=>{const y=pad.t+ih*f;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='right';ctx.fillText((mx-(mx-mn)*f).toFixed(1),pad.l-4,y+3);});ctx.beginPath();vals.forEach((v,i)=>{i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v));});ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),4,0,Math.PI*2);ctx.fillStyle='#111';ctx.fill();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('S'+(i+1),sx(i),h-10);ctx.fillStyle='#111';ctx.fillText(v.toFixed(1),sx(i),sy(v)-8);});}
-function drawRadar(){const c=document.getElementById('c2');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastCounts.length)return;const cx=w/2,cy=h/2,R=Math.min(w,h)/2-30;const n=PH.length;const max=Math.max(...lastCounts,1);[0.25,0.5,0.75,1].forEach(f=>{ctx.beginPath();for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.lineTo(cx+Math.cos(a)*R*f,cy+Math.sin(a)*R*f);}ctx.closePath();ctx.strokeStyle='#e0e0e0';ctx.lineWidth=0.5;ctx.stroke();});for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=0.5;ctx.stroke();const lx=cx+Math.cos(a)*(R+16),ly=cy+Math.sin(a)*(R+16);ctx.fillStyle=PH[i].hi?'#111':'#999';ctx.font=(PH[i].hi?'bold ':'')+'10px sans-serif';ctx.textAlign='center';ctx.fillText(PH[i].s,lx,ly+3);}ctx.beginPath();lastCounts.forEach((v,i)=>{const a=i/n*Math.PI*2-Math.PI/2;const r=v/max*R;i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);});ctx.closePath();ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='rgba(0,0,0,0.06)';ctx.fill();}
+function drawLine(){const c=document.getElementById('c1');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastSections.length)return;const pad={t:20,r:20,b:30,l:40};const iw=w-pad.l-pad.r,ih=h-pad.t-pad.b;const vals=lastSections.map(s=>s.v);const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;const sx=(i)=>pad.l+i/(vals.length-1)*iw;const sy=(v)=>pad.t+ih-(v-mn)/(mx-mn)*ih;const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;const clrGrid=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.07)';const clrLabel=isDark?'#aaa':'#666';const clrLine='#5b9bd5';const clrDot='#e07b39';ctx.strokeStyle=clrGrid;ctx.lineWidth=0.5;[0,0.25,0.5,0.75,1].forEach(f=>{const y=pad.t+ih*f;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();ctx.fillStyle=clrLabel;ctx.font='10px sans-serif';ctx.textAlign='right';ctx.fillText((mx-(mx-mn)*f).toFixed(1),pad.l-4,y+3);});ctx.beginPath();vals.forEach((v,i)=>{i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v));});ctx.strokeStyle=clrLine;ctx.lineWidth=2;ctx.stroke();vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),5,0,Math.PI*2);ctx.fillStyle=clrDot;ctx.fill();ctx.fillStyle=clrLabel;ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('S'+(i+1),sx(i),h-10);ctx.fillStyle=isDark?'#ddd':'#333';ctx.font='bold 10px sans-serif';ctx.fillText(v.toFixed(1),sx(i),sy(v)-10);});}
+function drawRadar(){const c=document.getElementById('c2');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastCounts.length)return;const cx=w/2,cy=h/2,R=Math.min(w,h)/2-30;const n=PH.length;const max=Math.max(...lastCounts,1);const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;const clrGrid=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.07)';const clrSpoke=isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.1)';const clrHiLabel=isDark?'#f0c060':'#c07000';const clrLabel=isDark?'#aaa':'#777';[0.25,0.5,0.75,1].forEach(f=>{ctx.beginPath();for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.lineTo(cx+Math.cos(a)*R*f,cy+Math.sin(a)*R*f);}ctx.closePath();ctx.strokeStyle=clrGrid;ctx.lineWidth=0.5;ctx.stroke();});for(let i=0;i<n;i++){const a=i/n*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle=clrSpoke;ctx.lineWidth=0.5;ctx.stroke();const lx=cx+Math.cos(a)*(R+16),ly=cy+Math.sin(a)*(R+16);ctx.fillStyle=PH[i].hi?clrHiLabel:clrLabel;ctx.font=(PH[i].hi?'bold ':'')+'10px sans-serif';ctx.textAlign='center';ctx.fillText(PH[i].s,lx,ly+3);}ctx.beginPath();lastCounts.forEach((v,i)=>{const a=i/n*Math.PI*2-Math.PI/2;const r=v/max*R;i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);});ctx.closePath();ctx.strokeStyle='#5b9bd5';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle=isDark?'rgba(91,155,213,0.18)':'rgba(91,155,213,0.12)';ctx.fill();}
 function updateSeeds(){const idx=parseInt(document.getElementById('toneSelect').value);const tone=TONES[idx];const sp=document.getElementById('seedP');sp.innerHTML='';tone.seeds.forEach(w=>{const b=document.createElement('button');b.className='spill';b.textContent=w;b.onclick=()=>{const ta=document.getElementById('txt');const pos=ta.selectionStart;ta.value=ta.value.slice(0,pos)+w+' '+ta.value.slice(pos);ta.focus();};sp.appendChild(b);});}
 function loadGettysburg(){document.getElementById('txt').value=GETTYSBURG;document.getElementById('toneSelect').value='11';document.getElementById('dSlider').value='3';document.getElementById('dVal').textContent='3';updateSeeds();analyze();}
-function clearAll(){document.getElementById('txt').value='';document.getElementById('results').classList.add('hidden');document.getElementById('chordNote').classList.add('hidden');}
-function tab(id){document.querySelectorAll('.vm-tab').forEach((b,i)=>b.classList.toggle('on',['scorer','viz','tonecircle','harmony','inventory'][i]===id));document.querySelectorAll('.vm-panel').forEach(p=>p.classList.remove('on'));document.getElementById('p-'+id).classList.add('on');if(id==='tonecircle')renderTC();if(id==='harmony')renderHarmony();if(id==='inventory')renderInv();if(id==='viz')drawCharts();}
-function renderTC(){const g=document.getElementById('tcGrid');if(g.children.length)return;TONES.forEach(t=>{const d=document.createElement('div');d.className='tc-item';d.innerHTML='<div class="tc-tone">'+t.n+'</div><div class="tc-ph">'+t.p+'</div><div class="tc-v">V≈'+t.v.toFixed(1)+'</div><div class="tc-seeds">'+t.seeds.slice(0,5).join(' · ')+'</div>';g.appendChild(d);});}
-function renderHarmony(){const g=document.getElementById('chordGrid');if(g.children.length)return;CHORDS.forEach(c=>{const d=document.createElement('div');d.className='chord-item';d.innerHTML='<div class="chord-name">'+c.n+'</div><div class="chord-eq">'+c.eq+'</div><div class="chord-ex">'+c.ex+'</div>';g.appendChild(d);});}
+function clearAll(){document.getElementById('txt').value='';document.getElementById('results').classList.add('hidden');lastToneFreq={};}
+function tab(id){document.querySelectorAll('.vm-tab').forEach((b,i)=>b.classList.toggle('on',['scorer','viz','tonecircle','inventory'][i]===id));document.querySelectorAll('.vm-panel').forEach(p=>p.classList.remove('on'));document.getElementById('p-'+id).classList.add('on');if(id==='tonecircle')renderTC(activeToneIdx,lastToneFreq);if(id==='inventory')renderInv();if(id==='viz')drawCharts();}
+function renderTC(highlightIdx,toneFreq){
+  toneFreq=toneFreq||{};
+  const canvas=document.getElementById('tcCanvas');
+  const dpr=window.devicePixelRatio||1;
+  const size=Math.min(canvas.offsetWidth||640,640);
+  canvas.width=size*dpr;canvas.height=size*dpr;
+  canvas.style.width=size+'px';canvas.style.height=size+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,size,size);
+  const cx=size/2,cy=size/2,R=size*0.36;
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const colRing=isDark?'#444':'#e0e0e0';
+  const colText=isDark?'#aaa':'#666';
+  const colActive=isDark?'#fff':'#111';
+  const colDot=isDark?'#444':'#ddd';
+  // compute frequency max for scaling
+  const maxFreq=Math.max(...Object.values(toneFreq),1);
+  const totalWins=Object.values(toneFreq).reduce((s,v)=>s+v,0)||1;
+  // outer ring
+  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
+  ctx.strokeStyle=colRing;ctx.lineWidth=1;ctx.stroke();
+  // inner ring
+  ctx.beginPath();ctx.arc(cx,cy,R*0.08,0,Math.PI*2);
+  ctx.strokeStyle=colRing;ctx.lineWidth=1;ctx.stroke();
+  const n=TONES.length;
+  TONES.forEach((t,i)=>{
+    const a=i/n*Math.PI*2-Math.PI/2;
+    const freq=toneFreq[t.n]||0;
+    const freqRatio=freq/maxFreq;
+    const isActive=(highlightIdx===i);
+    const hasFreq=freq>0;
+    // spoke — thickness and length scale with frequency
+    const spokeR=hasFreq?R*(0.1+freqRatio*0.85):R*0.1;
+    const lw=hasFreq?(0.5+freqRatio*4):0.5;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(a)*R*0.1,cy+Math.sin(a)*R*0.1);
+    ctx.lineTo(cx+Math.cos(a)*spokeR,cy+Math.sin(a)*spokeR);
+    ctx.strokeStyle=isActive?colActive:(hasFreq?(isDark?'#888':'#999'):colRing);
+    ctx.lineWidth=isActive?Math.max(lw,3):lw;
+    ctx.stroke();
+    // dot at spoke tip
+    const dotR=isActive?5:(hasFreq?3+freqRatio*3:2);
+    const px=cx+Math.cos(a)*R,py=cy+Math.sin(a)*R;
+    ctx.beginPath();ctx.arc(px,py,dotR,0,Math.PI*2);
+    ctx.fillStyle=isActive?colActive:(hasFreq?(isDark?'#999':'#888'):colDot);
+    ctx.fill();
+    // label — tangential rotation
+    const labelR=R+24;
+    const lx=cx+Math.cos(a)*labelR,ly=cy+Math.sin(a)*labelR;
+    ctx.save();ctx.translate(lx,ly);
+    let rot=a-Math.PI/2;
+    if(a>Math.PI/2&&a<=Math.PI*1.5)rot+=Math.PI;
+    ctx.rotate(rot);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    if(isActive){
+      ctx.font='bold 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      ctx.fillStyle=colActive;
+    } else if(hasFreq){
+      const sz=10+Math.round(freqRatio*3);
+      ctx.font=sz+'px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      ctx.fillStyle=isDark?'#bbb':'#444';
+    } else {
+      ctx.font='10px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      ctx.fillStyle=colText;
+    }
+    ctx.fillText(t.n,0,0);
+    // freq % for active or high-freq tones
+    if(hasFreq&&freq===maxFreq){
+      ctx.font='9px sans-serif';ctx.fillStyle=colText;
+      ctx.fillText(Math.round(freq/totalWins*100)+'%',0,13);
+    }
+    ctx.restore();
+  });
+  // centre
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  if(highlightIdx!=null){
+    ctx.font='bold 16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.fillStyle=colActive;ctx.fillText(TONES[highlightIdx].n,cx,cy-10);
+    ctx.font='11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.fillStyle=colText;ctx.fillText('V='+TONES[highlightIdx].v.toFixed(1),cx,cy+8);
+  } else {
+    ctx.font='11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.fillStyle=colText;ctx.fillText('score a passage first',cx,cy);
+  }
+}
 function renderInv(){const g=document.getElementById('invGrid');if(g.children.length)return;PH.forEach(p=>{const d=document.createElement('div');d.className='inv-item'+(p.hi?' inv-hi':'');d.innerHTML='<div class="inv-sym">'+p.s+'</div><div class="inv-name">'+p.n+'</div><div class="inv-ex">'+p.ex+'</div><div class="inv-wt">'+(p.hi?'×'+p.w+' weighted':'×'+p.w)+'</div>';g.appendChild(d);});}
 updateSeeds();
 </script>
-</body>
-</html>
+
+
+</body></html>
