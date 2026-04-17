@@ -124,11 +124,16 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
       <option value="8">Joy — V≈5.2</option>
       <option value="9">Indignation — V≈5.0</option>
       <option value="10">Wistfulness — V≈4.8</option>
-      <option value="11" selected>Pride — V≈4.5</option>
-      <option value="12">Resolve — V≈4.2</option>
-      <option value="13">Tenderness — V≈4.0</option>
-      <option value="14">Stoicism — V≈3.7</option>
-      <option value="15">Melancholy — V≈3.5</option>
+      <option value="11">Unease — V≈4.7</option>
+      <option value="12" selected>Pride — V≈4.5</option>
+      <option value="13">Defiance — V≈4.4</option>
+      <option value="14">Resolve — V≈4.2</option>
+      <option value="15">Acceptance — V≈4.1</option>
+      <option value="16">Tenderness — V≈4.0</option>
+      <option value="17">Curiosity — V≈3.9</option>
+      <option value="18">Stoicism — V≈3.7</option>
+      <option value="19">Melancholy — V≈3.5</option>
+      <option value="20">Longing — V≈3.3</option>
     </select>
   </div>
   <div class="d-row">
@@ -150,7 +155,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
     </div>
     <div class="tone-badge" id="toneBadge"></div>
     <div class="bar-track"><div class="bar-fill" id="bFill" style="width:0%"></div><div class="bar-tgt" id="bTgt" style="left:50%"></div></div>
-    <div class="bar-ends"><span>3.0 · Absurdity</span><span>9.0 · Disbelief</span></div>
+    <div class="bar-ends"><span>3.3 · Longing</span><span>9.0 · Disbelief</span></div>
     <div class="gap-note" id="gapNote"></div>
     <div id="chordNote" class="chord-note hidden"></div>
     <div class="ph-grid" id="phGrid"></div>
@@ -174,7 +179,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
 
 <div id="p-tonecircle" class="vm-panel">
   <div class="tc-grid" id="tcGrid"></div>
-  <p class="tagline">16-tone circle · calibrated against 420-word OED anchor set · © 2026 Stuart Cooley</p>
+  <p class="tagline">21-tone register · calibrated against 420-word OED anchor set · © 2026 Stuart Cooley</p>
 </div>
 
 <div id="p-harmony" class="vm-panel">
@@ -185,7 +190,7 @@ canvas{width:100%;max-width:700px;height:220px;display:block;margin:0 auto}
 
 <div id="p-inventory" class="vm-panel">
   <div class="inv-grid" id="invGrid"></div>
-  <p class="tagline">15 American English vowel phonemes · 420-word OED anchor set · bordered = weighted for Still In It</p>
+  <p class="tagline">15 American English vowel phonemes · 420-word OED anchor set · bordered = weighted phonemes</p>
 </div>
 
 <script>
@@ -201,11 +206,16 @@ const TONES=[
   {n:"Joy",v:5.2,p:"aɪ / iː",seeds:["life","light","find","delight","vibrant","divine","ignite","invite","revive","thrive","aligned","decide"]},
   {n:"Indignation",v:5.0,p:"ɪ / ʌ",seeds:["resist","insist","persist","grit","dismiss","rigid","strict","blunt","unjust","grudge","ruptured","unfit"]},
   {n:"Wistfulness",v:4.8,p:"ɪ / ɛ",seeds:["linger","brink","glimmer","wistful","dimly","elicit","flit","flicker","hint","whisper","dwindle","brittle"]},
+  {n:"Unease",v:4.7,p:"ɪ / ʌ",seeds:["restless","unsettled","bristle","shifted","flinch","stiff","undone","tensed","stiffen","rift","unsteady","uneasy"]},
   {n:"Pride",v:4.5,p:"aɪ / ɪ",seeds:["dignified","insightful","distinct","resilience","strive","initiative","incisive","justified","precise","principled","vigilant","invincible"]},
+  {n:"Defiance",v:4.4,p:"aɪ / ɛ",seeds:["refused","resist","denied","held","unyielding","unbent","defiant","withstood","persisted","rebelled","unbroken","stood"]},
   {n:"Resolve",v:4.2,p:"ɔː / eɪ",seeds:["momentum","testament","reckoning","persistence","equanimity","surrender","legacy","gravitas","laconic","stoic","candor","moral"]},
+  {n:"Acceptance",v:4.1,p:"ə / ɛ",seeds:["settled","let","allowed","conceded","released","enough","granted","yielded","acknowledged","rested","moved on","made peace"]},
   {n:"Tenderness",v:4.0,p:"ɛ / oʊ",seeds:["gentle","settle","held","felt","left","shelter","rest","kept","blessed","tender","softly","cherished"]},
+  {n:"Curiosity",v:3.9,p:"ɪ / iː",seeds:["wondered","noticed","studied","seeking","distinct","peculiar","interest","observed","lingered","examined","struck","considered"]},
   {n:"Stoicism",v:3.7,p:"ə / ʌ",seeds:["flat","was","can","but","just","had","then","done","stood","held","kept","past"]},
   {n:"Melancholy",v:3.5,p:"ɔː / ə",seeds:["lost","soft","long","gone","hollow","moss","autumn","crossing","cost","fog","dusk","hollow"]},
+  {n:"Longing",v:3.3,p:"ɔː / oʊ",seeds:["owed","home","known","old","slow","alone","longed","close","cold","holding","almost","gone"]},
 ];
 const CHORDS=[
   {n:"Elegiac Love",eq:"Tenderness + Grief",ex:"'She was a beautiful child.' Two tones sounding at once — the ɔː of loss beneath the ɛ of tenderness. The chord of love that has already been taken."},
@@ -238,7 +248,7 @@ function score(text){const tokens=text.trim().split(/\s+/);const n=tokens.length
 function sectionScore(words){const t=words.join(' ');const n=words.length;const w=PH.reduce((s,p)=>{const m=t.match(p.r)||[];p.r.lastIndex=0;return s+m.length*p.w;},0);return Math.round(w/n*10*10)/10;}
 function closestTone(v){return TONES.reduce((b,t)=>Math.abs(t.v-v)<Math.abs(b.v-v)?t:b,TONES[0]);}
 function analyze(){const text=document.getElementById('txt').value.trim();if(!text)return;const res=score(text);if(!res)return;const{v,n,counts,tokens}=res;const d=parseInt(document.getElementById('dSlider').value);const toneIdx=parseInt(document.getElementById('toneSelect').value);const target=TONES[toneIdx].v;const ct=closestTone(v);const sz=Math.max(1,Math.floor(tokens.length/5));const secs=[];for(let i=0;i<5;i++){const sl=tokens.slice(i*sz,(i+1)*sz);if(sl.length>2)secs.push({label:'Section '+(i+1),v:sectionScore(sl)});}lastSections=secs;lastCounts=counts;let delta='—';if(secs.length>=2){const diffs=secs.slice(1).map((s,i)=>s.v-secs[i].v);const maxD=diffs.reduce((m,d)=>Math.abs(d)>Math.abs(m)?d:m,0);delta=(maxD>=0?'+':'')+maxD.toFixed(2);}
-document.getElementById('axV').textContent=v.toFixed(1);document.getElementById('axD').textContent=d;document.getElementById('axDelta').textContent=delta;document.getElementById('toneBadge').textContent=ct.n+' · '+ct.p+' · V='+v.toFixed(1);const pct=Math.min(100,Math.max(0,(v-3.0)/(9.0-3.0)*100));document.getElementById('bFill').style.width=Math.round(pct)+'%';const tpct=Math.min(100,Math.max(0,(target-3.0)/(9.0-3.0)*100));document.getElementById('bTgt').style.left=Math.round(tpct)+'%';const diff=v-target;let gMsg;if(Math.abs(diff)<=0.2)gMsg='On target for '+TONES[toneIdx].n+' (V≈'+target.toFixed(1)+'). No adjustment needed.';else if(diff<0)gMsg=(Math.abs(diff)).toFixed(1)+' below target. Increase ɪ and ɔː density.';else gMsg=diff.toFixed(1)+' above target. Reduce weighted phonemes — let schwa carry rhythm.';document.getElementById('gapNote').textContent=gMsg;const cNote=document.getElementById('chordNote');if(d>=5){const chord=CHORDS.find(c=>c.eq.toLowerCase().includes(ct.n.toLowerCase()))||null;if(chord){cNote.textContent='Harmonic chord detected: '+chord.n+' ('+chord.eq+') — '+chord.ex;cNote.classList.remove('hidden');}else{cNote.textContent='High dissonance (D='+d+'): surface tone and content are in tension.';cNote.classList.remove('hidden');}}else{cNote.classList.add('hidden');}
+const vRaw=v;const vDisplay=Math.min(v,9.0);const overflowWarning=vRaw>9.0;document.getElementById('axV').textContent=vDisplay.toFixed(1)+(overflowWarning?' ⚠':'');document.getElementById('axD').textContent=d;document.getElementById('axDelta').textContent=delta;document.getElementById('toneBadge').textContent=ct.n+' · '+ct.p+' · V='+vDisplay.toFixed(1)+(overflowWarning?' — score capped at 9.0: passage too short for reliable measurement':'');const pct=Math.min(100,Math.max(0,(vDisplay-3.0)/(9.0-3.0)*100));document.getElementById('bFill').style.width=Math.round(pct)+'%';const tpct=Math.min(100,Math.max(0,(target-3.0)/(9.0-3.0)*100));document.getElementById('bTgt').style.left=Math.round(tpct)+'%';const diff=vDisplay-target;let gMsg;if(overflowWarning)gMsg='Score capped at 9.0 — passage too short for reliable measurement. Paste at least 30 words for an accurate reading.';else if(Math.abs(diff)<=0.2)gMsg='On target for '+TONES[toneIdx].n+' (V≈'+target.toFixed(1)+'). No adjustment needed.';else if(diff<0)gMsg=(Math.abs(diff)).toFixed(1)+' below target. Increase ɪ and ɔː density.';else gMsg=diff.toFixed(1)+' above target. Reduce weighted phonemes — let schwa carry rhythm.';document.getElementById('gapNote').textContent=gMsg;const cNote=document.getElementById('chordNote');if(d>=5){const chord=CHORDS.find(c=>c.eq.toLowerCase().includes(ct.n.toLowerCase()))||null;if(chord){cNote.textContent='Harmonic chord detected: '+chord.n+' ('+chord.eq+') — '+chord.ex;cNote.classList.remove('hidden');}else{cNote.textContent='High dissonance (D='+d+'): surface tone and content are in tension.';cNote.classList.remove('hidden');}}else{cNote.classList.add('hidden');}
 const maxC=Math.max(...counts,1);const pg=document.getElementById('phGrid');pg.innerHTML='';PH.forEach((p,i)=>{const d2=document.createElement('div');d2.className='ph'+(p.hi?' ph-hi':'');d2.innerHTML='<div class="ph-sym">'+p.s+'</div><div class="ph-n">'+p.n+'</div><div class="ph-ct">'+counts[i]+'</div><div class="ph-bar"><div class="ph-bf" style="width:'+Math.round(counts[i]/maxC*100)+'%"></div></div><div class="ph-wt">×'+p.w+'</div>';pg.appendChild(d2);});const sg=document.getElementById('secGrid');sg.innerHTML='';const maxSV=Math.max(...secs.map(s=>s.v),1);let pv=null;secs.forEach(s=>{const row=document.createElement('div');row.className='sec-row';const dStr=pv!==null?((s.v-pv>=0?'+':'')+(s.v-pv).toFixed(2)):'—';const pct2=Math.round(s.v/maxSV*100);row.innerHTML='<span class="sec-label">'+s.label+'</span><div class="sec-bar-wrap"><div class="sec-bar" style="width:'+pct2+'%"></div></div><span class="sec-v">'+s.v.toFixed(1)+'</span><span class="sec-d">Δ='+dStr+'</span>';sg.appendChild(row);pv=s.v;});const words=text.toLowerCase().split(/\W+/).filter(w=>w.length>3);const hw=[];words.forEach(w=>{PH.filter(p=>p.hi).forEach(p=>{if(!hw.includes(w)&&p.r.test(w))hw.push(w);p.r.lastIndex=0;});});const hwEl=document.getElementById('highW');hwEl.innerHTML='';[...new Set(hw)].slice(0,16).forEach(w=>{const s=document.createElement('span');s.className='pill';s.textContent=w;hwEl.appendChild(s);});document.getElementById('results').classList.remove('hidden');drawCharts();}
 function drawCharts(){drawLine();drawRadar();}
 function drawLine(){const c=document.getElementById('c1');const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;c.width=(c.offsetWidth||700)*dpr;c.height=220*dpr;ctx.scale(dpr,dpr);const w=c.offsetWidth||700,h=220;ctx.clearRect(0,0,w,h);if(!lastSections.length)return;const pad={t:20,r:20,b:30,l:40};const iw=w-pad.l-pad.r,ih=h-pad.t-pad.b;const vals=lastSections.map(s=>s.v);const mn=Math.min(...vals)-0.5,mx=Math.max(...vals)+0.5;const sx=(i)=>pad.l+i/(vals.length-1)*iw;const sy=(v)=>pad.t+ih-(v-mn)/(mx-mn)*ih;const clrPri=document.body.style.color||'#111';const clrSec='#666';const clrBor='#e0e0e0';ctx.strokeStyle=clrBor;ctx.lineWidth=0.5;[0,0.25,0.5,0.75,1].forEach(f=>{const y=pad.t+ih*f;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='right';ctx.fillText((mx-(mx-mn)*f).toFixed(1),pad.l-4,y+3);});ctx.beginPath();vals.forEach((v,i)=>{i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v));});ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();vals.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),4,0,Math.PI*2);ctx.fillStyle='#111';ctx.fill();ctx.fillStyle=clrSec;ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText('S'+(i+1),sx(i),h-10);ctx.fillStyle='#111';ctx.fillText(v.toFixed(1),sx(i),sy(v)-8);});}
